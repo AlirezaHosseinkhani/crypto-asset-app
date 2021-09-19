@@ -15,7 +15,7 @@ class CryptoPriceWidget extends StatelessWidget {
     final _deviceSize = MediaQuery.of(context).size;
     return InkWell(
       onTap: () {
-        Get.to(CoinDetailsScreen(_name, _price));
+        Get.to(() => CoinDetailsScreen(_name, _price));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),

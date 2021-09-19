@@ -176,6 +176,7 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
 
                   coinsBox.put(key, value);
                   Navigator.pop(context);
+                  Navigator.pop(context);
                 })
           ],
         );

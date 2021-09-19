@@ -228,11 +228,11 @@ class _MainScreenState extends State<MainScreen> {
                                           ),
                                           child: ListTile(
                                             onTap: () =>
-                                                Get.to(AssetDetailsScreen(
-                                              name: key,
-                                              count: value,
-                                              price: coinPrice,
-                                            )),
+                                                Get.to(() => AssetDetailsScreen(
+                                                      name: key,
+                                                      count: value,
+                                                      price: coinPrice,
+                                                    )),
                                             onLongPress: () {
                                               setState(() {
                                                 coinsBox.delete(key);
