@@ -52,9 +52,12 @@ class CryptoPriceWidget extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: randomOpaqueColor(),
                   child: FittedBox(
-                      child: Text(
-                    _name,
-                    style: TextStyle(color: Colors.white),
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                    child: Text(
+                      _name.toUpperCase(),
+                      style: TextStyle(color: Colors.white),
+                    ),
                   )),
                 ),
                 Text('$_price \$')

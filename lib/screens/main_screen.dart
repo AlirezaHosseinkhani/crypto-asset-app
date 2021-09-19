@@ -251,8 +251,13 @@ class _MainScreenState extends State<MainScreen> {
                                                 backgroundColor: Color.fromRGBO(
                                                     235, 235, 235, 1),
                                                 child: FittedBox(
-                                                  child:
-                                                      Text(key.toUpperCase()),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 2.0),
+                                                    child:
+                                                        Text(key.toUpperCase()),
+                                                  ),
                                                 ),
                                               ),
                                             ),
