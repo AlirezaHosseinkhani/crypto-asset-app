@@ -1,3 +1,4 @@
+import 'package:crypto_asset_app/constans.dart';
 import 'package:crypto_asset_app/provider/price_provider.dart';
 import 'package:crypto_asset_app/screens/main_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,9 +11,9 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
 class AssetDetailsScreen extends StatefulWidget {
-  String name;
-  String count;
-  String price;
+  final String name;
+  final String count;
+  final String price;
 
   AssetDetailsScreen(
       {required this.name, required this.price, required this.count});
@@ -38,10 +39,19 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(0, 0, 0, 0.0),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: KWhiteColor),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.blueGrey,
+        color: KMainBackgroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,10 +61,10 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
               width: _deviceSize.width * 0.85,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [Color(0xFF195F58), Color(0xFF06342E)],
+                    colors: [KMainCardWidgetBlueColor, KMainCardWidgetRedColor],
                     // colors: [Color(0xFF7F1717), Color(0xFF1D1E33)],
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight),
+                    begin: Alignment.bottomRight,
+                    end: Alignment.topLeft),
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(60),
                     topLeft: Radius.circular(15),
@@ -69,7 +79,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                     width: double.infinity,
                     child: Neumorphic(
                       style: NeumorphicStyle(
-                        color: Color.fromRGBO(15, 15, 26, 0.0),
+                        color: Color.fromRGBO(255, 255, 255, 0.0),
                         shape: NeumorphicShape.flat,
                         boxShape: NeumorphicBoxShape.roundRect(
                           BorderRadius.only(
@@ -92,7 +102,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                             children: <Widget>[
                               Neumorphic(
                                 style: NeumorphicStyle(
-                                  color: Color.fromRGBO(15, 15, 26, 0.6),
+                                  color: KAssetBGColor,
                                   shape: NeumorphicShape.flat,
                                   boxShape: NeumorphicBoxShape.roundRect(
                                     BorderRadius.only(
@@ -113,9 +123,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                       child: Center(
                                         child: Text(
                                           '${(double.parse(widget.price) * double.parse(widget.count)).toStringAsFixed(0).toCurrencyString(leadingSymbol: MoneySymbols.DOLLAR_SIGN, mantissaLength: 0)}',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white),
+                                          style: KAssetCoinScreenTextStyle,
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -137,6 +145,8 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                                       vertical: 8.0),
                                               child: Text(
                                                 'Total Value (\$)',
+                                                style:
+                                                    KAssetCoinScreenSubTextStyle,
                                                 textAlign: TextAlign.center,
                                               ),
                                             ),
@@ -148,7 +158,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                               SizedBox(width: 5),
                               Neumorphic(
                                 style: NeumorphicStyle(
-                                  color: Color.fromRGBO(15, 15, 26, 0.6),
+                                  color: KAssetBGColor,
                                   shape: NeumorphicShape.flat,
                                   boxShape: NeumorphicBoxShape.roundRect(
                                     BorderRadius.only(
@@ -170,9 +180,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                         child: Text(
                                           // '${widget.count}',
                                           '${widget.count}',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white),
+                                          style: KAssetCoinScreenTextStyle,
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -191,6 +199,8 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                                 vertical: 8.0),
                                             child: Text(
                                               'Coin Count',
+                                              style:
+                                                  KAssetCoinScreenSubTextStyle,
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -210,7 +220,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                   // border: NeumorphicBorder(
                                   //     color: Color.fromRGBO(26, 26, 45, 1.0),
                                   //     width: 1),
-                                  color: Color.fromRGBO(15, 15, 26, 0.6),
+                                  color: KAssetBGColor,
                                   shape: NeumorphicShape.flat,
                                   boxShape: NeumorphicBoxShape.roundRect(
                                     BorderRadius.only(
@@ -241,6 +251,8 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                                 vertical: 8.0),
                                             child: Text(
                                               'Total Value (Toman)',
+                                              style:
+                                                  KAssetCoinScreenSubTextStyle,
                                               textAlign: TextAlign.center,
                                             ),
                                           ),
@@ -251,10 +263,10 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                       child: Center(
                                         child: Text(
                                           '${(priceInToman * double.parse(widget.count)).toStringAsFixed(0).toCurrencyString(mantissaLength: 0)} Toman',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                                          style: KAssetCoinScreenTextStyle
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -271,7 +283,7 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                 child: FittedBox(
                                   child: Text(
                                     'Delete Coin from Assets',
-                                    style: TextStyle(color: Colors.white),
+                                    style: KWhiteTextStyle,
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -292,6 +304,9 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                         CupertinoDialogAction(
                                           onPressed: () {
                                             coinsBox.delete(widget.name);
+                                            Get.snackbar('Successful',
+                                                'Coin was Deleted',
+                                                colorText: KWhiteColor);
                                             Navigator.pop(context);
                                             Navigator.pop(context);
                                           },
@@ -303,30 +318,6 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                                       ],
                                     ),
                                   );
-                                  // Get.dialog(
-                                  //   AlertDialog(
-                                  //     title: Text("Delete Coin"),
-                                  //     content: Text("Are you sure?"),
-                                  //     actions: <Widget>[
-                                  //       TextButton(
-                                  //         child: Text("Cancel"),
-                                  //         onPressed: () {
-                                  //           Get.back();
-                                  //         },
-                                  //       ),
-                                  //       TextButton(
-                                  //         child: Text(
-                                  //           "Confirm",
-                                  //           style: TextStyle(color: Colors.red),
-                                  //         ),
-                                  //         onPressed: () {
-                                  //           Get.back();
-                                  //         },
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  //   barrierDismissible: false,
-                                  // );
                                 }),
                           ),
                         ],
@@ -337,34 +328,33 @@ class _AssetDetailsScreenState extends State<AssetDetailsScreen> {
                       top: -(_deviceSize.width * 0.05),
                       left: -(_deviceSize.width * 0.05),
                       child: Neumorphic(
-                        style: NeumorphicStyle(
-                          color: Color.fromRGBO(15, 15, 26, 0.6),
-                          shape: NeumorphicShape.concave,
-                          boxShape: NeumorphicBoxShape.circle(),
-                          depth: -8,
-                          intensity: 0.5,
-                          lightSource: LightSource.bottomRight,
-                        ),
-                        child: Container(
-                          height: _deviceSize.width * 0.2,
-                          width: _deviceSize.width * 0.2,
-                          decoration: BoxDecoration(
-                            color: Color(0xFF2C6C62),
-                            shape: BoxShape.circle,
+                          style: NeumorphicStyle(
+                            shape: NeumorphicShape.concave,
+                            boxShape: NeumorphicBoxShape.circle(),
+                            depth: 4,
+                            intensity: 0.5,
+                            lightSource: LightSource.bottomRight,
                           ),
-                          child: FittedBox(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(widget.name.toUpperCase(),
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold)),
+                          child: Container(
+                            height: _deviceSize.width * 0.2,
+                            width: _deviceSize.width * 0.2,
+                            decoration: BoxDecoration(
+                              color: KMainCardWidgetRedColor,
+                              shape: BoxShape.circle,
                             ),
-                          ),
-                        ),
-                      ))
+                            child: FittedBox(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  widget.name.toUpperCase(),
+                                  style: KAssetCoinScreenTextStyle.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24),
+                                ),
+                              ),
+                            ),
+                          ))),
                 ],
               ),
             ),

@@ -3,8 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+
+import '../constans.dart';
 
 class CoinDetailsScreen extends StatefulWidget {
   final String name;
@@ -20,15 +24,18 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      Provider.of<PriceProvider>(context, listen: false).getUSDTPrice();
+    });
     coinsBox = Hive.box<String>("coins");
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    Provider.of<PriceProvider>(context).getUSDTPrice();
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   Provider.of<PriceProvider>(context).getUSDTPrice();
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +46,20 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
         (double.parse(_dollarPrice) / 10) * double.parse(widget.price);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(0, 0, 0, 0.0),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: KWhiteColor),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       resizeToAvoidBottomInset: false,
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.blueGrey,
+        color: KMainBackgroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,10 +69,10 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
               width: _deviceSize.width * 0.8,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [Color(0xFF195F58), Color(0xFF06342E)],
+                    colors: [KMainCardWidgetBlueColor, KMainCardWidgetRedColor],
                     // colors: [Color(0xFF7F1717), Color(0xFF1D1E33)],
-                    begin: Alignment.bottomLeft,
-                    end: Alignment.topRight),
+                    begin: Alignment.bottomRight,
+                    end: Alignment.topLeft),
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(60),
                     topLeft: Radius.circular(15),
@@ -71,25 +87,19 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       Text(
-                        '${widget.name}',
-                        style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                        '${widget.name.toUpperCase()}',
+                        style: KCoinDetailsTextStyle,
                         textAlign: TextAlign.center,
                       ),
                       Text(
                         '${priceInToman.toStringAsFixed(0).toCurrencyString(mantissaLength: 0)} Toman',
                         // '${toman.toCurrencyString(leadingSymbol: MoneySymbols.DOLLAR_SIGN,mantissaLength: 1)}',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                        style: KCoinDetailsTextStyle.copyWith(fontSize: 20),
                         textAlign: TextAlign.center,
                       ),
                       Text(
-                        '${widget.price.toCurrencyString(leadingSymbol: MoneySymbols.DOLLAR_SIGN, mantissaLength: 1)}',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        '${widget.price.toCurrencyString(leadingSymbol: MoneySymbols.DOLLAR_SIGN, mantissaLength: 3)}',
+                        style: KWhiteTextStyle.copyWith(fontSize: 18),
                         textAlign: TextAlign.center,
                       ),
                       Align(
@@ -99,7 +109,7 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
                           child: CupertinoButton.filled(
                               child: Text(
                                 'Add Coin to Assets',
-                                style: TextStyle(color: Colors.white),
+                                style: KWhiteTextStyle,
                               ),
                               onPressed: _showDialog),
                         ),
@@ -109,25 +119,36 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
                   Positioned(
                       top: -(_deviceSize.width * 0.05),
                       left: -(_deviceSize.width * 0.05),
-                      child: Container(
-                        height: _deviceSize.width * 0.2,
-                        width: _deviceSize.width * 0.2,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF2C6C62),
-                          shape: BoxShape.circle,
-                        ),
-                        child: FittedBox(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text('Etherium',
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
+                      child: Neumorphic(
+                          style: NeumorphicStyle(
+                            shape: NeumorphicShape.concave,
+                            boxShape: NeumorphicBoxShape.circle(),
+                            depth: 4,
+                            intensity: 0.5,
+                            lightSource: LightSource.bottomRight,
                           ),
-                        ),
-                      ))
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: KMainCardWidgetRedColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Container(
+                              height: _deviceSize.width * 0.2,
+                              width: _deviceSize.width * 0.2,
+                              decoration: BoxDecoration(
+                                color: KMainCardWidgetRedColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: FittedBox(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Text(widget.name.toUpperCase(),
+                                      style: KCoinDetailsTextStyle),
+                                ),
+                              ),
+                            ),
+                          ))),
                 ],
               ),
             ),
@@ -138,49 +159,49 @@ class _CoinDetailsScreenState extends State<CoinDetailsScreen> {
   }
 
   _showDialog() async {
-    await showDialog<String>(
+    showCupertinoDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.blueGrey,
-          contentPadding: const EdgeInsets.all(16.0),
-          content: Row(
-            children: <Widget>[
-              Expanded(
-                child: TextField(
-                  autofocus: true,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      labelText: 'Coin Count', hintText: '1.132'),
-                  controller: coinCountController,
-                ),
-              )
-            ],
+      builder: (context) => CupertinoAlertDialog(
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Add Coin", textAlign: TextAlign.left),
+        ),
+        content: CupertinoTextField(
+          maxLines: 1,
+          keyboardType: TextInputType.number,
+          controller: coinCountController,
+          placeholder: "Enter Coin Count",
+        ),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Cancel"),
           ),
-          actions: <Widget>[
-            TextButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-            TextButton(
-                child: const Text('Add'),
-                onPressed: () {
-                  Provider.of<PriceProvider>(context, listen: false).addCoin(
-                      CoinAssets(
-                          coinName: widget.name,
-                          coinCount: double.parse(coinCountController.text),
-                          coinPrice: double.parse(widget.price)));
-                  final key = widget.name;
-                  final value = coinCountController.text;
+          CupertinoDialogAction(
+            onPressed: () {
+              Provider.of<PriceProvider>(context, listen: false).addCoin(
+                  CoinAssets(
+                      coinName: widget.name,
+                      coinCount: double.parse(coinCountController.text),
+                      coinPrice: double.parse(widget.price)));
+              final key = widget.name;
+              final value = coinCountController.text;
 
-                  coinsBox.put(key, value);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                })
-          ],
-        );
-      },
+              coinsBox.put(key, value);
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Get.snackbar('Successful', 'Coin was added',
+                  colorText: KWhiteColor);
+            },
+            child: Text(
+              "Add",
+            ),
+          )
+        ],
+      ),
     );
   }
 }

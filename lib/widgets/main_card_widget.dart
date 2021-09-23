@@ -5,6 +5,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
+import '../constans.dart';
+
 class MainCardWidget extends StatefulWidget {
   @override
   _MainCardWidgetState createState() => _MainCardWidgetState();
@@ -34,8 +36,8 @@ class _MainCardWidgetState extends State<MainCardWidget> {
 
   double calculateAssetsToDollar(BuildContext context) {
     double total = 0.0;
-    final _dollarPrice =
-        Provider.of<PriceProvider>(context, listen: false).dollarPrice;
+    // final _dollarPrice =
+    //     Provider.of<PriceProvider>(context, listen: false).dollarPrice;
     Map<String, dynamic> _items = Provider.of<PriceProvider>(context).items;
 
     for (var i = 0; i < coinsBox.keys.length; i++) {
@@ -53,10 +55,11 @@ class _MainCardWidgetState extends State<MainCardWidget> {
     coinsBox = Hive.box<String>("coins");
     double _totalTomanAsset = calculateAssetsToToman(context);
     double _totalDollarAsset = calculateAssetsToDollar(context);
+    var _dollarPrice =
+        Provider.of<PriceProvider>(context, listen: false).dollarPrice;
     return Neumorphic(
       style: NeumorphicStyle(
-        border:
-            NeumorphicBorder(color: Color.fromRGBO(19, 19, 35, 1), width: 3),
+        border: NeumorphicBorder(color: KMainCardWidgetBorderColor, width: 3),
         shape: NeumorphicShape.convex,
         boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(30)),
         depth: -8,
@@ -70,7 +73,7 @@ class _MainCardWidgetState extends State<MainCardWidget> {
           gradient: LinearGradient(
               colors:
                   // [Color(0xFF0E4B26),
-                  [Color.fromRGBO(120, 5, 5, 1.0), Color(0xFF1D1E33)],
+                  [KMainCardWidgetRedColor, KMainCardWidgetBlueColor],
               // colors: [Color(0xFF7F1717), Color(0xFF1D1E33)],
               begin: Alignment.bottomLeft,
               end: Alignment.topRight),
@@ -86,12 +89,17 @@ class _MainCardWidgetState extends State<MainCardWidget> {
               Text(
                 _totalDollarAsset.toStringAsFixed(0).toCurrencyString(
                     leadingSymbol: MoneySymbols.DOLLAR_SIGN, mantissaLength: 0),
-                style: TextStyle(color: Colors.white, fontSize: 32),
+                style: KMainCardDollarTextStyle,
               ),
               SizedBox(height: 20),
               Text(
                 '${_totalTomanAsset.toStringAsFixed(0).toCurrencyString(mantissaLength: 0)} Toman',
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: KMainCardTomanTextStyle,
+              ),
+              SizedBox(height: 25),
+              Text(
+                'USDT Price: ${(double.parse(_dollarPrice) / 10).toStringAsFixed(0).toCurrencyString(mantissaLength: 0)} Toman',
+                style: KMainCardTetherTextStyle,
               )
             ],
           ),

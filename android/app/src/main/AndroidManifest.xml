@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alireza.crypto.crypto_asset_app">
    <application
-        android:label="crypto_asset_app"
+        android:label="Crypto Asset App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

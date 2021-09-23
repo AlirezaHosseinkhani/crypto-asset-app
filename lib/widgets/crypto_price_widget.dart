@@ -2,8 +2,11 @@ import 'dart:math';
 
 import 'package:crypto_asset_app/screens/coin_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
+
+import '../constans.dart';
 
 class CryptoPriceWidget extends StatelessWidget {
   final String _name;
@@ -22,8 +25,8 @@ class CryptoPriceWidget extends StatelessWidget {
         child: Neumorphic(
           style: NeumorphicStyle(
             border: NeumorphicBorder(
-                color: Color.fromRGBO(26, 26, 45, 1.0), width: 1),
-            color: Color.fromRGBO(15, 15, 26, 0.6),
+                color: KCryptoPriceWidgetBorderColor, width: 1),
+            color: KCryptoPriceWidgetBGColor,
             shape: NeumorphicShape.flat,
             boxShape: NeumorphicBoxShape.roundRect(
               BorderRadius.only(
@@ -56,11 +59,25 @@ class CryptoPriceWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: Text(
                       _name.toUpperCase(),
-                      style: TextStyle(color: Colors.white),
+                      style: KWhiteTextStyle,
                     ),
                   )),
                 ),
-                Text('$_price \$')
+                double.parse(_price) > 10.0
+                    ? Text(
+                        double.parse(_price)
+                            .toStringAsFixed(0)
+                            .toCurrencyString(
+                                leadingSymbol: MoneySymbols.DOLLAR_SIGN,
+                                mantissaLength: 0),
+                        style: KAssetCoinScreenSubTextStyle,
+                      )
+                    : Text(
+                        _price.toCurrencyString(
+                            leadingSymbol: MoneySymbols.DOLLAR_SIGN,
+                            mantissaLength: 2),
+                        style: KAssetCoinScreenSubTextStyle,
+                      )
               ],
             ),
           ),

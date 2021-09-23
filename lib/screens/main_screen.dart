@@ -3,11 +3,15 @@ import 'package:crypto_asset_app/screens/asset_details_screen.dart';
 import 'package:crypto_asset_app/widgets/crypto_price_widget.dart';
 import 'package:crypto_asset_app/widgets/main_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter_multi_formatter/formatters/money_input_formatter.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../constans.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -15,9 +19,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var _isLoading = false;
+  // var _isLoading = false;
   var _isInit = true;
   late Box<String> coinsBox;
+  String coinPrice = '0';
+  List<CoinAssets> _coinAssetsItem = [];
+  double coinPriceDouble = 0;
 
   @override
   void initState() {
@@ -27,13 +34,15 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void didChangeDependencies() {
+    _getAssetsItems();
+
     setState(() {
-      _isLoading = true;
+      // _isLoading = true;
     });
     if (_isInit) {
       Provider.of<PriceProvider>(context).fetchAndSetCoins().then((_) {
         setState(() {
-          _isLoading = false;
+          // _isLoading = false;
         });
         _isInit = false;
       });
@@ -44,7 +53,8 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _onRefresh() async {
     setState(() {
-      Get.snackbar('Refresh', 'Coin Prices Was Update!');
+      Get.snackbar('Refresh', 'Coin Prices Was Update!',
+          colorText: KWhiteColor);
       setState(() {
         Provider.of<PriceProvider>(context, listen: false).fetchAndSetCoins();
         Provider.of<PriceProvider>(context, listen: false).getUSDTPrice();
@@ -52,12 +62,22 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  String _getCoinPrice(String key) {
+    String coinPrice = Provider.of<PriceProvider>(context, listen: false)
+        .currentCoinPrice(key);
+    return coinPrice;
+  }
+
+  void _getAssetsItems() {
+    _coinAssetsItem =
+        Provider.of<PriceProvider>(context, listen: false).assetsItems;
+  }
+
   @override
   Widget build(BuildContext context) {
     final _deviceSize = MediaQuery.of(context).size;
     Map<String, dynamic> _items = Provider.of<PriceProvider>(context).items;
-    List<CoinAssets> _coinAssetsItem =
-        Provider.of<PriceProvider>(context).assetsItems;
+    // List<CoinAssets> _coinAssetsItem =_getAssetsItems();
     print('screenItem');
     print(_items);
     print('COIN_ASSET_SIZE');
@@ -68,7 +88,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         body: SafeArea(
           child: Container(
-            color: Color.fromRGBO(29, 30, 51, 1),
+            color: KMainBackgroundColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -84,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                             style: NeumorphicStyle(
                               depth: 8,
                               intensity: 0.5,
-                              color: Colors.white,
+                              color: KWhiteColor,
                             ),
                             textStyle: NeumorphicTextStyle(
                               fontSize: 28,
@@ -145,7 +165,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Color.fromRGBO(235, 235, 235, 1.0),
+                        color: KListViewWhiteColor,
                         borderRadius: BorderRadius.only(
                           topRight: Radius.circular(40),
                           topLeft: Radius.circular(40),
@@ -161,7 +181,7 @@ class _MainScreenState extends State<MainScreen> {
                               height: 1,
                               width: 60,
                               decoration: BoxDecoration(
-                                  color: Color.fromRGBO(29, 30, 51, 1),
+                                  color: KMainBackgroundColor,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(40))),
                             ),
@@ -178,7 +198,8 @@ class _MainScreenState extends State<MainScreen> {
                           //                   text:
                           //                       'There is Nothing to Show!... \n',
                           //                   style: TextStyle(
-                          //                       fontSize: 16, color: Colors.grey),
+                          //                       fontSize: 16,
+                          //                       color: Colors.grey),
                           //                   children: <TextSpan>[
                           //                     const TextSpan(
                           //                       text:
@@ -201,9 +222,12 @@ class _MainScreenState extends State<MainScreen> {
                                   itemBuilder: (ctx, index) {
                                     final key = coins.keys.toList()[index];
                                     final value = coins.get(key) as String;
-                                    String coinPrice =
-                                        Provider.of<PriceProvider>(context)
-                                            .currentCoinPrice(key);
+                                    String coinPrice = _getCoinPrice(key);
+                                    try {
+                                      coinPriceDouble = double.parse(coinPrice);
+                                    } catch (e) {
+                                      coinPriceDouble = 0;
+                                    }
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
@@ -220,59 +244,83 @@ class _MainScreenState extends State<MainScreen> {
                                         ),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
+                                            color: KWhiteColor,
                                             borderRadius: BorderRadius.only(
                                               topRight: Radius.circular(20),
                                               topLeft: Radius.circular(20),
                                             ),
                                           ),
                                           child: ListTile(
-                                            onTap: () =>
-                                                Get.to(() => AssetDetailsScreen(
-                                                      name: key,
-                                                      count: value,
-                                                      price: coinPrice,
-                                                    )),
-                                            onLongPress: () {
-                                              setState(() {
-                                                coinsBox.delete(key);
-                                              });
-                                            },
-                                            leading: Neumorphic(
-                                              style: NeumorphicStyle(
-                                                shape: NeumorphicShape.flat,
-                                                boxShape:
-                                                    NeumorphicBoxShape.circle(),
-                                                depth: -8,
-                                                intensity: 0.5,
-                                                lightSource: LightSource.bottom,
-                                              ),
-                                              child: CircleAvatar(
-                                                backgroundColor: Color.fromRGBO(
-                                                    235, 235, 235, 1),
-                                                child: FittedBox(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 2.0),
-                                                    child:
-                                                        Text(key.toUpperCase()),
+                                              onTap: () => Get.to(
+                                                  () => AssetDetailsScreen(
+                                                        name: key,
+                                                        count: value,
+                                                        price: coinPrice,
+                                                      )),
+                                              onLongPress: () {
+                                                setState(() {
+                                                  coinsBox.delete(key);
+                                                });
+                                              },
+                                              leading: Neumorphic(
+                                                style: NeumorphicStyle(
+                                                  shape: NeumorphicShape.flat,
+                                                  boxShape: NeumorphicBoxShape
+                                                      .circle(),
+                                                  depth: -8,
+                                                  intensity: 0.5,
+                                                  lightSource:
+                                                      LightSource.bottom,
+                                                ),
+                                                child: CircleAvatar(
+                                                  backgroundColor:
+                                                      KListViewWhiteColor,
+                                                  child: FittedBox(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 2.0),
+                                                      child: Text(
+                                                          key.toUpperCase()),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            title: Text(
-                                              key.toUpperCase(),
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                            ),
-                                            subtitle: Text(value.toString(),
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                            trailing: Text(coinPrice,
-                                                style: TextStyle(
-                                                    color: Colors.black)),
-                                          ),
+                                              title: Text(key.toUpperCase(),
+                                                  style:
+                                                      KMainScreenListviewTextStyle),
+                                              subtitle: Text(value.toString(),
+                                                  style:
+                                                      KMainScreenListviewTextStyle),
+                                              trailing:
+                                                  // double.parse(coinPrice) > 10.0.
+                                                  //     ?
+                                                  Text(
+                                                      coinPriceDouble > 10.0
+                                                          ? double.parse(
+                                                                  coinPrice)
+                                                              .toStringAsFixed(
+                                                                  0)
+                                                              .toCurrencyString(
+                                                                  leadingSymbol:
+                                                                      MoneySymbols
+                                                                          .DOLLAR_SIGN,
+                                                                  mantissaLength:
+                                                                      0)
+                                                          : coinPrice.toCurrencyString(
+                                                              leadingSymbol:
+                                                                  MoneySymbols
+                                                                      .DOLLAR_SIGN,
+                                                              mantissaLength:
+                                                                  2),
+                                                      style:
+                                                          KMainScreenListviewTextStyle)
+                                              // : Text(
+                                              //     coinPrice.toCurrencyString(
+                                              //         leadingSymbol: MoneySymbols.DOLLAR_SIGN,
+                                              //         mantissaLength: 2),
+                                              //     style: KMainScreenListviewTextStyle)
+                                              ),
                                         ),
                                       ),
                                     );
@@ -298,9 +346,9 @@ class _MainScreenState extends State<MainScreen> {
           onPressed: () => _onRefresh(),
           child: Icon(
             Icons.refresh,
-            color: Colors.white,
+            color: KWhiteColor,
           ),
-          backgroundColor: Color.fromRGBO(29, 30, 51, 1),
+          backgroundColor: KMainBackgroundColor,
         ),
       ),
     );

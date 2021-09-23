@@ -9,6 +9,8 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'constans.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Directory document = await getApplicationDocumentsDirectory();
@@ -25,6 +27,10 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor:
+            KMainStatusBarColor //or set color with: Color(0xFF0000FF)
+        ));
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
@@ -33,7 +39,11 @@ class MyApp extends StatelessWidget {
       ],
       child: GetMaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData.dark(),
+        theme: ThemeData(
+            fontFamily: 'TTFirsNeue',
+            appBarTheme: Theme.of(context)
+                .appBarTheme
+                .copyWith(brightness: Brightness.dark)),
         home: MainScreen(),
       ),
     );

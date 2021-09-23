@@ -20,12 +20,9 @@ class CoinAssets {
 }
 
 class PriceProvider with ChangeNotifier {
-  // final List<CoinPrice> priceList = [];
-
   Map<String, dynamic> _items = {};
   List<CoinAssets> _assetsItems = [];
-  String _tetherPrice = '';
-  String _currentCoinPrice = '';
+  String _tetherPrice = '0';
 
   Map<String, dynamic> get items {
     return {..._items};
@@ -81,7 +78,6 @@ class PriceProvider with ChangeNotifier {
               name == 'usdt'),
           key: (name) => name,
           value: (v) => loaded[v]);
-      // _items.addAll(loaded);
       print('provider');
       print(_items);
       notifyListeners();
@@ -91,18 +87,12 @@ class PriceProvider with ChangeNotifier {
   }
 
   Future<void> addCoin(CoinAssets coinAssets) async {
-    final _prodIndex = _assetsItems
-        .indexWhere((coin) => coin.coinName == coinAssets.coinName.toString());
     final newCoinAsset = CoinAssets(
       coinName: coinAssets.coinName,
       coinCount: coinAssets.coinCount,
       coinPrice: coinAssets.coinPrice,
     );
-    // if (_assetsItems.contains(coinAssets.coinName)) {
-    //   _assetsItems[_prodIndex] = newCoinAsset;
-    // }
     _assetsItems.add(newCoinAsset);
-    // _items.insert(0, newProduct); // at the start of the list
     notifyListeners();
   }
 
@@ -114,7 +104,6 @@ class PriceProvider with ChangeNotifier {
       if (extractedData == null) {
         return;
       }
-      // final Map<String, dynamic> loadedProducts = {};
       _tetherPrice = extractedData['trades'][0]['price'];
       print(_tetherPrice);
       notifyListeners();
@@ -122,31 +111,4 @@ class PriceProvider with ChangeNotifier {
       throw (error);
     }
   }
-  //
-  // Future<void> getCoinPrice(String coin) async {
-  //   const url = 'https://api.nobitex.ir/market/global-stats';
-  //   try {
-  //     final response = await http.post(Uri.parse(url));
-  //     final extractedData = json.decode(response.body);
-  //     if (extractedData == null) {
-  //       return;
-  //     }
-  //     _currentCoinPrice = extractedData['markets']['binance'][coin];
-  //     notifyListeners();
-  //   } catch (error) {
-  //     throw (error);
-  //   }
-  // }
-  //
-  // Future<List> setSharedValue(List data) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setDouble('BTC', data[0]);
-  //   prefs.setDouble('ETH', data[1]);
-  //   prefs.setDouble('XRP', data[2]);
-  //   prefs.setDouble('TRX', data[3]);
-  //   prefs.setDouble('LTC', data[4]);
-  //   prefs.setDouble('DOGE', data[5]);
-  //
-  //   notifyListeners();
-  // }
 }
