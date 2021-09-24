@@ -1,16 +1,25 @@
-# crypto_asset_app
+# Crypto Asset App
 
-A new Flutter project.
+ A Flutter-based Application for Check Most Common Cryptocurrency Prices and Assets Value Based on Nobitex Api.
+ 
+## Nobitex Documentations
 
-## Getting Started
+Built API documentation is available on:
 
-This project is a starting point for a Flutter application.
+- [Nobitex Documentation](https://apidocs.nobitex.ir/#api)
 
-A few resources to get you started if this is your first Flutter project:
+This repository contains documentation for connecting to the Nobitex cryptocurrency exchange market and using the official APIs.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Screen Shots
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img width="390" alt="Screen Shot 1400-07-02 at 20 39 28" src="https://user-images.githubusercontent.com/32016238/134716009-906feb90-06e8-4171-a99b-086bf74c6f11.png"> :|:<img width="388" alt="Screen Shot 1400-07-02 at 20 57 32" src="https://user-images.githubusercontent.com/32016238/134716410-124f5a72-0f68-4e66-817a-54a8fe455bcd.png">
+
+## Run App
+
+For Run App on IOS Simulator:
+```
+git clone -b master https://github.com/AlirezaHosseinkhani/crypto-asset-app.git
+cd crypto-asset-app
+open -a Simulator
+flutter run
+```
