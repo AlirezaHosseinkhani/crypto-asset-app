@@ -35,9 +35,9 @@ class CryptoPriceWidget extends StatelessWidget {
                   bottomRight: Radius.circular(10),
                   bottomLeft: Radius.circular(20)),
             ),
-            depth: -6,
-            intensity: 0.25,
-            lightSource: LightSource.bottomLeft,
+            depth: -3,
+            intensity: 0.5,
+            lightSource: LightSource.topRight,
           ),
           child: Container(
             width: _deviceSize.width * 0.35,

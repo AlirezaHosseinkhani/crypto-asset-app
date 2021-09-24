@@ -1,7 +1,9 @@
 import 'package:crypto_asset_app/provider/price_provider.dart';
 import 'package:crypto_asset_app/screens/asset_details_screen.dart';
+import 'package:crypto_asset_app/screens/no_connection_screen.dart';
 import 'package:crypto_asset_app/widgets/crypto_price_widget.dart';
 import 'package:crypto_asset_app/widgets/main_card_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_multi_formatter/formatters/money_input_formatter.dart';
@@ -86,6 +88,7 @@ class _MainScreenState extends State<MainScreen> {
     return RefreshIndicator(
       onRefresh: () => _onRefresh(),
       child: Scaffold(
+        backgroundColor: KMainStatusBarColor,
         body: SafeArea(
           child: Container(
             color: KMainBackgroundColor,
@@ -103,7 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: NeumorphicText("My Crypto Wallet",
                             style: NeumorphicStyle(
                               depth: 8,
-                              intensity: 0.5,
+                              intensity: 0.6,
                               color: KWhiteColor,
                             ),
                             textStyle: NeumorphicTextStyle(
@@ -251,16 +254,67 @@ class _MainScreenState extends State<MainScreen> {
                                             ),
                                           ),
                                           child: ListTile(
-                                              onTap: () => Get.to(
-                                                  () => AssetDetailsScreen(
-                                                        name: key,
-                                                        count: value,
-                                                        price: coinPrice,
-                                                      )),
+                                              onTap: () {
+                                                coinPrice.toString() == 'null'
+                                                    ? Get.to(
+                                                        NoConnectionScreen())
+                                                    : Get.to(() =>
+                                                        AssetDetailsScreen(
+                                                          name: key,
+                                                          count: value,
+                                                          price: coinPrice,
+                                                        ));
+                                              },
                                               onLongPress: () {
-                                                setState(() {
-                                                  coinsBox.delete(key);
-                                                });
+                                                // setState(() {
+                                                //   coinsBox.delete(key);
+                                                // }
+                                                //
+                                                // );
+                                                showCupertinoDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      CupertinoAlertDialog(
+                                                    title: const Text(
+                                                        "Delete Coin"),
+                                                    content: const Text(
+                                                        "Are you sure?"),
+                                                    actions: <Widget>[
+                                                      CupertinoDialogAction(
+                                                        isDefaultAction: true,
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            "Cancel"),
+                                                      ),
+                                                      CupertinoDialogAction(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            coinsBox
+                                                                .delete(key);
+                                                          });
+                                                          Get.snackbar(
+                                                              'Successful',
+                                                              'Coin was Deleted',
+                                                              colorText:
+                                                                  KWhiteColor);
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                          "Confirm",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
                                               },
                                               leading: Neumorphic(
                                                 style: NeumorphicStyle(
@@ -274,14 +328,18 @@ class _MainScreenState extends State<MainScreen> {
                                                 ),
                                                 child: CircleAvatar(
                                                   backgroundColor:
-                                                      KListViewWhiteColor,
+                                                      KMainBackgroundColor,
                                                   child: FittedBox(
                                                     child: Padding(
                                                       padding: const EdgeInsets
                                                               .symmetric(
                                                           horizontal: 2.0),
                                                       child: Text(
-                                                          key.toUpperCase()),
+                                                        key.toUpperCase(),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white70),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -333,6 +391,7 @@ class _MainScreenState extends State<MainScreen> {
                               },
                             ),
                           ),
+                          SizedBox(height: 15),
                         ],
                       ),
                     ),

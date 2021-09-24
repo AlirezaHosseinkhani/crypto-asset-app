@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:crypto_asset_app/constans.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class CoinPrice {
@@ -108,6 +110,8 @@ class PriceProvider with ChangeNotifier {
       print(_tetherPrice);
       notifyListeners();
     } catch (error) {
+      Get.snackbar("Error", "No Connection Available",
+          colorText: KMainWhiteColor);
       throw (error);
     }
   }

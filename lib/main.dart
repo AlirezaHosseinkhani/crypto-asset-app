@@ -20,7 +20,6 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle());
@@ -38,7 +37,6 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: GetMaterialApp(
-        title: 'Flutter Demo',
         theme: ThemeData(
             fontFamily: 'TTFirsNeue',
             appBarTheme: Theme.of(context)
